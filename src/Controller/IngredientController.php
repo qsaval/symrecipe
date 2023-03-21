@@ -22,7 +22,7 @@ class IngredientController extends AbstractController
      * @param Request $request
      * @return Response 
      */
-    #[Route('/ingredient', name: 'app_ingredient')]
+    #[Route('/ingredient', name: 'ingredient')]
     public function index(IngredientRepository $repository, PaginatorInterface $paginator, Request $request): Response
     {
         $ingredients = $paginator->paginate(
@@ -51,11 +51,49 @@ class IngredientController extends AbstractController
 
             $this->addFlash('success', 'Votre ingredient a été créé avec succés !');
 
-            return $this->reditectToRoute('app_ingredient');
+            return $this->redirectToRoute('ingredient');
         };
 
         return $this->render('pages/ingredient/new.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    #[Route('/ingredient/edition/{id}', name: 'ingredient_edit')]
+    public function edit(Ingredient $ingredient, Request $request, EntityManagerInterface $manager): Response
+    {
+        $form = $this->createForm(IngredientType::class, $ingredient);
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $ingredient = $form->getData();
+
+            $manager->persist($ingredient);
+            $manager->flush();
+
+            $this->addFlash('success', 'Votre ingredient a été modifié avec succés !');
+
+            return $this->redirectToRoute('ingredient');
+        };
+
+        return $this->render('pages/ingredient/edit.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    #[Route('/ingredient/suppression/{id}', name: 'ingredient_delete')]
+    public function delete(Ingredient $ingredient, EntityManagerInterface $manager): Response
+    {
+        if(!$ingredient){
+            $this->addFlash('warning', 'L\'ingrédient en question n\'a pas été trouvé !');
+            return $this->redirectToRoute('ingredient');
+        }
+
+        $manager->remove($ingredient);
+        $manager->flush();
+
+        $this->addFlash('success', 'Votre ingredient a été supprimé avec succés !');
+
+        return $this->redirectToRoute('ingredient');
     }
 }
