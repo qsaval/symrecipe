@@ -2,11 +2,11 @@
 
 namespace App\DataFixtures;
 
-use mt;
 use Faker\Factory;
 use Faker\Generator;
 use App\Entity\Recipe;
 use App\Entity\Ingredient;
+use App\Entity\User;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
@@ -51,6 +51,9 @@ class AppFixtures extends Fixture
             $manager->persist($recipe);
         }
 
+        for ($z=0; $z < 10; $z++) { 
+            $user = new User();
+        }
         
         $manager->flush();
     }
