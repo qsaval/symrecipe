@@ -48,6 +48,15 @@ class UserType extends AbstractType
                     new Assert\Length(['min' => 2, 'max' => 50])
                 ]
             ])
+            ->add('plainPassword', PasswordType::class, [
+                'attr' => [
+                    'class' => 'form-control'
+                ], 
+                'label' => 'Mot de passe',
+                'label_attr' => [
+                    'class' => 'form-label mt-4'
+                ]
+            ])
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary mt-4'
