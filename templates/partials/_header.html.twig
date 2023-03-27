@@ -7,17 +7,40 @@
       <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link active" href="#">Acceuil
+            <a class="nav-link active" href="{{ path('app_home') }}">Acceuil
               <span class="visually-hidden">(current)</span>
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ path('ingredient') }}">Mes ingrédients</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ path('recipe') }}">Mes recettes</a>
-          </li>
+          {% if app.user %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('ingredient') }}">Mes ingrédients</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('recipe') }}">Mes recettes</a>
+            </li>
+          {% endif %}
         </ul>
+        <div class="d-flex">
+          <ul class="navbar-nav me-auto">
+            {% if app.user %}
+              <li class="nav-item dropdown" style="margin-right: 5rem;">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ app.user.fullName }}</a>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="{{ path('user_edit', {id: app.user.id}) }}">Modifier mes information</a>
+                  <a class="dropdown-item" href="{{ path('user_edit_password', {id: app.user.id}) }}">Modifier mon mot de passe</a>
+                  <a class="dropdown-item" href="{{ path('security_logout') }}">Déconnexion</a>
+                </div>
+              </li>
+            {% else %}             
+              <li class="nav-item">
+                <a class="nav-link" href="{{ path('security_login') }}">Connexion</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ path('security_regidtration') }}">Inscription</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
