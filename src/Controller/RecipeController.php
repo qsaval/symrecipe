@@ -8,9 +8,9 @@ use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -32,6 +32,7 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recette/{id}', name: 'recipe_show')]
+    #[Security("is_granted('ROLE_USER') and recipe.getIsPublic() === true")]
     public function show(Recipe $recipe): Response
     {
         return $this->render('pages/recipe/show.html.twig', [
