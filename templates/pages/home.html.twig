@@ -9,11 +9,11 @@
         <p class="lead">SymRecipe est une application qui va te permettre de créer des recettes à base d'ingrédients que tu auras toi-même créer. Tu pourras partager tes recettes à la communauté du site, ou bien les garder en privées.</p>
         <hr class="my-4">
         <p>Pour commencer, rendez-vous sur la page d'inscription pour utiliser l'application.</p>
-        <a href="#" class="btn btn-primary btn-lgz" role="button">Inscription</a>
+        <a href="{{ path('security_regidtration') }}" class="btn btn-primary btn-lgz" role="button">Inscription</a>
     </div>
     <div class="recipes">
         <h2 class="mt-4">Recette de la communauté</h2>
-        <div class="d-flex justify-content-center flex-wrap">
+        <div class="d-flex justify-content-between">
             {% for recipe in recipes %}
                 <div class="card border-primary mb-3 " style="max-width: 20rem;">
                     <div class="card-header">Recette n°{{ recipe.id }}</div>
