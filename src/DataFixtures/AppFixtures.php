@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Contact;
 use Faker\Factory;
 use Faker\Generator;
 use App\Entity\Recipe;
@@ -80,6 +81,16 @@ class AppFixtures extends Fixture
 
                 $manager->persist($mark);
             }
+        }
+
+        for ($x=0; $x < 5; $x++) { 
+            $contact = new Contact();
+            $contact->setFullName($this->faker->name())
+                    ->setEmail($this->faker->email())
+                    ->setSubject('Demainde n°'. ($x +1))
+                    ->setMessage($this->faker->text());
+            
+            $manager->persist($contact);
         }
         
         $manager->flush();
