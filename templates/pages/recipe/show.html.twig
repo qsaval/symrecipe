@@ -5,6 +5,15 @@
 {% block body %}
     <div class="container">
         <h1 class="mt-4">{{ recipe.name }}</h1>
+
+        {% for message in app.flashes('success') %}
+			<div class="alert alert-success mt-4">
+				{{ message }}
+			</div>
+		{% endfor %}
+
+        <p>La moyenne de cette recette est de {{ recipe.average|number_format(2,'.',',') }}/5</p>
+
         <div><span class="badge bg-primary">Créée le {{ recipe.createdAt|date('d/m/Y') }}</span></div>
         
         <div class="mt-4">
@@ -48,6 +57,10 @@
             {% for ingredient in recipe.ingredients %}
                 <span class="badge bg-primary">{{ ingredient.name }}</span>
             {% endfor %}
+        </div>
+
+        <div class="mark">
+            {{ form(form) }}
         </div>
     </div>
 {% endblock %}
