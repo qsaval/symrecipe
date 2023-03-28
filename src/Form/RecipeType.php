@@ -2,23 +2,25 @@
 
 namespace App\Form;
 
-use App\Entity\Ingredient;
 use App\Entity\Recipe;
+use App\Entity\Ingredient;
 use App\Repository\IngredientRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class RecipeType extends AbstractType
 {
@@ -51,7 +53,7 @@ class RecipeType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 1,
-                    'max' => 1440
+                    'max' => 1440,
                 ],
                 'required' => false,
                 'label' => 'Temps (en minutes)',
@@ -60,7 +62,7 @@ class RecipeType extends AbstractType
                 ],
                 'constraints' => [
                     new Assert\Positive(),
-                    new Assert\LessThan(1441) 
+                    new Assert\LessThan(1441)
                 ]
             ])
             ->add('nbPeople', IntegerType::class, [
@@ -76,7 +78,7 @@ class RecipeType extends AbstractType
                 ],
                 'constraints' => [
                     new Assert\Positive(),
-                    new Assert\LessThan(51) 
+                    new Assert\LessThan(51)
                 ]
             ])
             ->add('difficulty', RangeType::class, [
@@ -92,7 +94,7 @@ class RecipeType extends AbstractType
                 ],
                 'constraints' => [
                     new Assert\Positive(),
-                    new Assert\LessThan(51) 
+                    new Assert\LessThan(5)
                 ]
             ])
             ->add('description', TextareaType::class, [
@@ -112,42 +114,44 @@ class RecipeType extends AbstractType
             ->add('price', MoneyType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'min' => 1,
-                    'max' => 1440
                 ],
                 'required' => false,
-                'label' => 'Prix',
+                'label' => 'Prix ',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ],
                 'constraints' => [
-                   new Assert\Positive(),
-                   new Assert\LessThan(1001) 
+                    new Assert\Positive(),
+                    new Assert\LessThan(1001)
                 ]
             ])
             ->add('isFavorite', CheckboxType::class, [
                 'attr' => [
-                    'class' => 'form-check-input'
+                    'class' => 'form-check-input',
                 ],
                 'required' => false,
-                'label' => 'Favoris ?',
+                'label' => 'Favoris ? ',
                 'label_attr' => [
                     'class' => 'form-check-label'
                 ],
                 'constraints' => [
-                   new Assert\NotNull()
+                    new Assert\NotNull()
                 ]
             ])
-            ->add('ingredients', EntityType::class, [
-                'attr' => [
-                    'class' => 'ms-2'
+            ->add('imageFile', VichImageType::class, [
+                'label' => 'Image de la recette',
+                'label_attr' => [
+                    'class' => 'form-label mt-4'
                 ],
+                'required' => false
+            ])
+            ->add('ingredients', EntityType::class, [
                 'class' => Ingredient::class,
-                'query_builder' => function (IngredientRepository $r){
+                'query_builder' => function (IngredientRepository $r) {
                     return $r->createQueryBuilder('i')
-                             ->where('i.user = :user')
-                             ->orderBy('i.name', 'ASC')
-                             ->setParameter('user', $this->token->getToken()->getUser());
+                        ->where('i.user = :user')
+                        ->orderBy('i.name', 'ASC')
+                        ->setParameter('user', $this->token->getToken()->getUser());
                 },
                 'label' => 'Les ingrédients',
                 'label_attr' => [
@@ -155,15 +159,14 @@ class RecipeType extends AbstractType
                 ],
                 'choice_label' => 'name',
                 'multiple' => true,
-                'expanded' => true
+                'expanded' => true,
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary mt-4'
                 ],
                 'label' => 'Créer une recette'
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -173,3 +176,4 @@ class RecipeType extends AbstractType
         ]);
     }
 }
+
