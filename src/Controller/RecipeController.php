@@ -47,6 +47,30 @@ class RecipeController extends AbstractController
         ]);
     }
 
+    #[Route('/recette/communaute', name: 'recipe_community')]
+    public function indexPublic(
+        RecipeRepository $repository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
+        $cache = new FilesystemAdapter();
+        $data = $cache->get('recipes', function (ItemInterface $item) use ($repository) {
+            $item->expiresAfter(15);
+            return $repository->findPublicRecipe(null);
+        });
+
+        $recipes = $paginator->paginate(
+            $data,
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('pages/recipe/community.html.twig', [
+            'recipes' => $recipes
+        ]);
+    }
+
+
     /**
      * This controller allow us to create a new recipe
      *
